@@ -77,9 +77,9 @@ publishing {
                     }
                 }
                 scm {
-                    connection = 'scm:git:https://github.com/cloudecho/spring-boot-docker-secret.git'
-                    developerConnection = 'scm:git:https://github.com/cloudecho/spring-boot-docker-secret.git'
-                    url = 'scm:git:https://github.com/cloudecho/spring-boot-docker-secret.git'
+                    connection = 'scm:git:https://github.com/cloudecho/docker-secret-spring-boot-starter.git'
+                    developerConnection = 'scm:git:https://github.com/cloudecho/docker-secret-spring-boot-starter.git'
+                    url = 'scm:git:https://github.com/cloudecho/docker-secret-spring-boot-starter.git'
                 }
             }
         }
