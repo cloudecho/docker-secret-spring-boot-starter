@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    password: ${docker-secret-mysql-user-pw}
+
+docker-secret:
+  bind-path: classpath:/secrets
+#  bind-path: file:/tmp/secrets
+#  bind-path: /tmp/secrets
+  exclude-prefix: tls-

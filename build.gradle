@@ -1,0 +1,113 @@
+plugins {
+    id 'java-library'
+    id 'org.springframework.boot' version '2.5.7'
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
+    id 'maven-publish'
+    id 'signing'
+}
+
+group 'com.github.cloudecho'
+//version '0.0.4-SNAPSHOT'
+version '0.0.4'
+
+bootJar.enabled = false
+jar {
+    enabled = true
+    archiveClassifier.set('')
+}
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-autoconfigure'
+    implementation 'org.slf4j:slf4j-api'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                configurations.implementation.allDependencies.each {
+                    def dependencyNode = dependenciesNode.appendNode('dependency')
+                    dependencyNode.appendNode('groupId', it.group)
+                    dependencyNode.appendNode('artifactId', it.name)
+                    dependencyNode.appendNode('version', it.version)
+                }
+            }
+
+            pom {
+                name = 'Docker secret spring boot starter'
+                description = project.description
+                url = 'https://github.com/cloudecho/spring-boot-docker-secret'
+                licenses {
+                    license {
+                        name = 'MIT License'
+                        url = 'https://raw.githubusercontent.com/cloudecho/spring-boot-docker-secret/master/LICENSE'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'cloudecho'
+                        name = 'Echo Ma'
+                        email = 'maywide@qq.com'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:https://github.com/cloudecho/spring-boot-docker-secret.git'
+                    developerConnection = 'scm:git:https://github.com/cloudecho/spring-boot-docker-secret.git'
+                    url = 'scm:git:https://github.com/cloudecho/spring-boot-docker-secret.git'
+                }
+            }
+        }
+    }
+    repositories {
+        maven {
+            url = version.endsWith('SNAPSHOT') ? mavenSnapshotsUrl : mavenReleasesUrl
+
+            credentials {
+                username mavenUsername
+                password mavenPassword
+            }
+        }
+    }
+}
+
+tasks.withType(Sign) {
+    onlyIf {
+        !version.endsWith('SNAPSHOT')
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
